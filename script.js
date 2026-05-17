@@ -1,181 +1,100 @@
-async function generateUI(){
+async function generateUI() {
 
-  const prompt =
-    document.getElementById("prompt").value;
+  const prompt = document.getElementById("prompt").value;
+  const output = document.getElementById("output");
 
-  const output =
-    document.getElementById("output");
+  output.innerHTML = "Generating AI Design...";
 
-  output.innerHTML =
-  "Generating AI Website...";
+  try {
 
-  const apiKey =
-  "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";
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ prompt })
+    });
 
-  try{
+    const data = await response.json();
 
-    const response = await fetch(
-"https://openrouter.ai/api/v1/chat/completions",
+    console.log(data);
 
-{
-  method:"POST",
+    const aiText =
+      data.choices?.[0]?.message?.content ||
+      "Luxury Fashion Collection";
 
-  headers:{
+    output.innerHTML = `
 
-    "Authorization":
-    `Bearer ${apiKey}`,
+      <div class="dashboard">
 
-    "Content-Type":
-    "application/json"
+        <nav class="navbar">
 
-  },
+          <h1>LUXURY FASHION</h1>
 
-  body:JSON.stringify({
+          <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Collections</a>
+            <a href="#">Shop</a>
+            <a href="#">Contact</a>
+          </div>
 
-    model:"openai/gpt-3.5-turbo",
+        </nav>
 
-    messages:[
+        <<section class="hero">
 
-      {
-        role:"user",
+  <div class="hero-text">
 
-        content:
-`
-Generate a COMPLETE modern luxury fashion website.
+    <h2>${prompt}</h2>
 
-Topic:
-${prompt}
+    <p>
+      Discover premium black & gold fashion styles with elegant modern aesthetics.
+    </p>
 
-Rules:
-- Return ONLY HTML and CSS
-- Use dark premium UI
-- Add glassmorphism
-- Add gradients
-- Add modern navbar
-- Add hero section
-- Add product cards
-- Add REAL images from Unsplash
-- Use FULL image URLs
-- Stylish buttons
-- Responsive layout
-- No explanations
-`
-      }
-
-    ]
-
-  })
-
-});
-
-const data = await response.json();
-
-const text =
-data.choices[0].message.content;
-
-console.log(text);
-
-const cleaned = text
-.replace(/```html/g,"")
-.replace(/```css/g,"<style>")
-.replace(/```/g,"</style>");
-
-output.innerHTML = `
-
-<div class="dashboard">
-
-  <nav class="navbar">
-
-    <h1>Luxury Fashion</h1>
-
-    <div class="nav-links">
-      <a href="#">Home</a>
-      <a href="#">Shop</a>
-      <a href="#">Collections</a>
-      <a href="#">Contact</a>
-    </div>
-
-  </nav>
-
-  <section class="hero">
-
-    <div class="hero-text">
-
-      <h2>Discover Luxury Fashion</h2>
-
-      <p>
-      Explore premium styles and futuristic fashion trends.
-      </p>
-
-      <button>Shop Now</button>
-
-    </div>
-
-    <img src="
-https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=1600">
-
-  </section>
-
-  <h2 class="section-title">
-    Featured Products
-  </h2>
-
-  <div class="shop-container">
-
-    <div class="product-card">
-
-      <img src="
-https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800">
-
-      <h2>Luxury Black Jacket</h2>
-
-      <p>$99.99</p>
-
-      <button>Buy Now</button>
-
-    </div>
-
-    <div class="product-card">
-
-      <img src="
-https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800">
-
-      <h2>Modern Streetwear</h2>
-
-      <p>$149.99</p>
-
-      <button>Buy Now</button>
-
-    </div>
-
-    <div class="product-card">
-
-      <img src="
-https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800">
-
-      <h2>Premium Fashion Dress</h2>
-
-      <p>$199.99</p>
-
-      <button>Buy Now</button>
-
-    </div>
+    <button>Explore Collection</button>
 
   </div>
 
-</div>
+  <img
+  src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=1200">
 
-`;
+</section>
 
-  }
+        <h2 class="section-title">
+          Featured Fashion
+        </h2>
 
-  catch(error){
+        <div class="products">
+
+          <div class="card">
+            <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800">
+            <h3>Luxury Black Outfit</h3>
+            <p>$199</p>
+          </div>
+
+          <div class="card">
+            <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800">
+            <h3>Premium Streetwear</h3>
+            <p>$249</p>
+          </div>
+
+          <div class="card">
+            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800">
+            <h3>Elegant Fashion Dress</h3>
+            <p>$299</p>
+          </div>
+
+        </div>
+
+      </div>
+
+    `;
+
+  } catch (error) {
 
     console.log(error);
 
-    output.innerHTML =
-    "Something went wrong.";
-
+    output.innerHTML = `
+      <h2>Something went wrong.</h2>
+    `;
   }
-
 }
